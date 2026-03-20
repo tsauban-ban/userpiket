@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\UsersImport;
 use App\Exports\UsersTemplateExport;
 use App\Http\Controllers\Controller;
-use App\Models\Divisions;
+use App\Models\Division;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +17,7 @@ class ManageUserController extends Controller
     public function index(Request $request)
     {
          
-        $divisions = Divisions::all();
+        $divisions = Division::all();
         
         $query = User::with('division');
         

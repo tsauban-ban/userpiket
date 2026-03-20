@@ -11,11 +11,16 @@ return new class extends Migration
         Schema::create('picket_journals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->date('date');
             $table->string('activity');
             $table->text('description')->nullable();
-            $table->string('status');
+            $table->string('location')->nullable();
+            $table->enum('status', ['Done', 'Pending', 'Sakit', 'Izin', 'Alpha', 'Terlambat'])->default('Pending');
+            $table->date('date');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->string('notes')->nullable();
+            $table->string('before_photo')->nullable();
+            $table->string('after_photo')->nullable();
             $table->timestamps();
         });
     }

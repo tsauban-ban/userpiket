@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Divisions;
+use App\Models\Division;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,11 +25,16 @@ class DivisionsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'division_name' => 'Programmer',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         // Insert data baru - PAKAI KURUNG KURAWAL {}
         foreach ($divisions as $division) {
-            Divisions::create($division);
+            Division::create($division);
             $this->command->info('Divisi "' . $division['division_name'] . '" berhasil ditambahkan!');
         }}
 }

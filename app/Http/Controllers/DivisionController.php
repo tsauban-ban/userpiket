@@ -1,64 +1,64 @@
 <?php
+// app/Http/Controllers/DivisionController.php
 
 namespace App\Http\Controllers;
 
+use App\Models\Division;
 use Illuminate\Http\Request;
 
 class DivisionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $divisions = Division::withCount('users')->with('users')->get();
+        return view('admin.division.index', compact('divisions'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Division $division)
     {
-        //
+        $division->load('users');
+        return view('admin.division.detail-users', compact('division'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'division_name' => 'required|string|max:255|unique:divisions,division_name'
+        ]);
+
+        Division::create([
+            'division_name' => $request->division_name,
+            'total_users' => 0
+        ]);
+
+        return redirect()->route('divisions.index')
+            ->with('success', 'Divisi berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Division $division)
     {
-        //
+        $request->validate([
+            'division_name' => 'required|string|max:255|unique:divisions,division_name,' . $division->id
+        ]);
+
+        $division->update([
+            'division_name' => $request->division_name
+        ]);
+
+        return redirect()->route('divisions.index')
+            ->with('success', 'Divisi berhasil diupdate!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(Division $division)
     {
-        //
-    }
+        if ($division->users()->count() > 0) {
+            return redirect()->route('divisions.index')
+                ->with('error', 'Tidak bisa menghapus divisi yang masih memiliki user!');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $division->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('divisions.index')
+            ->with('success', 'Divisi berhasil dihapus!');
     }
 }

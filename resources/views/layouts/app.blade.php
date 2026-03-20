@@ -1,39 +1,31 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Aplikasi Piket')</title>
-    
-    <!-- Google Font Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <!-- Google Material Symbols (SEMUA ICON) -->
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-    />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Piket App')</title>
     @vite('resources/css/app.css')
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
 </head>
+<body class="bg-[#b7dcd1]">
+    <!-- Navbar -->
+    @include('components.navbar')
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto p-6">
+        @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
 
-</head>
-<body class="bg-[#ABD1C6] font-['Poppins']">
+        @if(session('error'))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+                {{ session('error') }}
+            </div>
+        @endif
 
-    {{-- Header --}}
-    @include('header.header')
-
-    {{-- Navbar --}}
-    @include('navbar.navbar')
-    {{-- CONTENT --}}
-    <main class="py-10">
         @yield('content')
-    </main>
-
+    </div>
 </body>
 </html>

@@ -9,10 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('divisions', function (Blueprint $table) {
-            $table->id();
-            $table->string('division_name');
-            $table->timestamps();
-        });
+        $table->id();
+        $table->string('division_name');
+        $table->integer('total_users')->default(0);
+        $table->timestamps();
+    });
     }
 
     public function down(): void
