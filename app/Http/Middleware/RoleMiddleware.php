@@ -1,5 +1,6 @@
 <?php
-// app/Http/Middleware/RoleMiddleware.php
+
+
 
 namespace App\Http\Middleware;
 
@@ -23,7 +24,9 @@ class RoleMiddleware
             }
         }
 
-        // Jika user tidak punya role yang sesuai
-        abort(403, 'Unauthorized access.');
+        
+        
+        
+        abort(403, 'Unauthorized access. Anda tidak memiliki akses ke halaman ini.');
     }
 }

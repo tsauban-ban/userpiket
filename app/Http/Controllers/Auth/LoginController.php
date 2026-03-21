@@ -1,5 +1,6 @@
 <?php
-// app/Http/Controllers/Auth/LoginController.php
+
+
 
 namespace App\Http\Controllers\Auth;
 
@@ -21,16 +22,26 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Cek remember me
+        
+        
         $remember = $request->has('remember') ? true : false;
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            // Regenerate session ID untuk keamanan
+            
+            
             session()->regenerate();
-              return redirect()->route('admin.picketjournal.index')
-                ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
+            
+            
+            
+            if (Auth::user()->role == 'admin') {
+                return redirect()->route('admin.picketjournal.index')
+                    ->with('success', 'Selamat datang, Admin ' . Auth::user()->name . '!');
+            } else {
+                return redirect()->route('dashboard')
+                    ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
+            }
         }
 
         return back()->withErrors([
