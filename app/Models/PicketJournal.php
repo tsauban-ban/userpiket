@@ -18,7 +18,8 @@ class PicketJournal extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Accessor untuk URL foto sebelum
+    
+    
     public function getBeforePhotoUrlAttribute()
     {
         return $this->before_photo 
@@ -26,7 +27,8 @@ class PicketJournal extends Model
             : null;
     }
 
-    // Accessor untuk URL foto sesudah
+    
+    
     public function getAfterPhotoUrlAttribute()
     {
         return $this->after_photo 
@@ -34,31 +36,36 @@ class PicketJournal extends Model
             : null;
     }
 
-    // Cek apakah ada foto sebelum
+    
+    
     public function hasBeforePhoto()
     {
         return !is_null($this->before_photo);
     }
 
-    // Cek apakah ada foto sesudah
+    
+    
     public function hasAfterPhoto()
     {
         return !is_null($this->after_photo);
     }
 
-    // Accessor untuk format tanggal Indonesia
+    
+    
     public function getFormattedDateAttribute()
     {
         return Carbon::parse($this->date)->locale('id')->isoFormat('dddd, D MMMM Y');
     }
 
-    // Accessor untuk hari dalam bahasa Indonesia
+    
+    
     public function getDayNameAttribute()
     {
         return Carbon::parse($this->date)->locale('id')->isoFormat('dddd');
     }
 
-    // Scope untuk filter berdasarkan hari
+    
+    
     public function scopeFilterByDay($query, $day)
     {
         if ($day) {
@@ -67,7 +74,8 @@ class PicketJournal extends Model
         return $query;
     }
 
-    // Scope untuk pencarian
+    
+    
     public function scopeSearch($query, $search)
     {
         if ($search) {

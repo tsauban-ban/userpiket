@@ -14,9 +14,10 @@ class Division extends Model
         return $this->hasMany(User::class, 'division_id');
     }
 
-    // Relasi ke Schedules
-    public function schedules()
+    
+    
+    public function picketJournals()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(PicketJournal::class);
     }
 }

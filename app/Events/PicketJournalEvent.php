@@ -1,5 +1,6 @@
 <?php
-// app/Events/PicketJournalEvent.php
+
+
 
 namespace App\Events;
 
@@ -19,35 +20,32 @@ class PicketJournalEvent implements ShouldBroadcast
     public $journal;
     public $action;
 
-    /**
-     * Create a new event instance.
-     */
+    
+    
     public function __construct(PicketJournal $journal, $action = 'created')
     {
         $this->journal = $journal;
         $this->action = $action;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     */
+    
+    
     public function broadcastOn()
     {
-        // Broadcast ke channel khusus user
+        
+    
         return new PrivateChannel('user.' . $this->journal->user_id);
     }
 
-    /**
-     * The event's broadcast name.
-     */
+    
+    
     public function broadcastAs()
     {
         return 'picket-journal.' . $this->action;
     }
 
-    /**
-     * Get the data to broadcast.
-     */
+    
+    
     public function broadcastWith()
     {
         return [

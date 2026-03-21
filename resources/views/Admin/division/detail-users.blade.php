@@ -4,7 +4,8 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6">
-    {{-- Header --}}
+    
+    
     <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-2xl font-bold">{{ $division->division_name }}</h2>
@@ -16,7 +17,8 @@
         </a>
     </div>
 
-    {{-- Stats Card --}}
+    
+    
     <div class="bg-teal-50 border border-teal-200 rounded-lg p-4 mb-6">
         <div class="grid grid-cols-3 gap-4 text-center">
             <div>
@@ -38,7 +40,8 @@
         </div>
     </div>
 
-    {{-- Users List --}}
+    
+    
     <div class="overflow-x-auto">
         <table class="w-full border">
             <thead>

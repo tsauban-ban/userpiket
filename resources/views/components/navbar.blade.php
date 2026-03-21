@@ -1,4 +1,4 @@
-{{-- resources/views/components/navbar.blade.php --}}
+
 @php
     try {
         $unreadNotifications = Auth::user()->unreadNotifications;
@@ -8,7 +8,17 @@
     }
 @endphp
 
-<div class="w-full flex justify-center mt-8">
+<div class="w-full flex justify-between items-center mt-8 px-8">
+    
+
+    <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-2xl text-[#004643]">assignment</span>
+        <span class="text-xl font-semibold text-[#004643]">Piket App</span>
+        
+    </div>
+
+    
+
     <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-[15px] shadow-md">
         
         <!-- Picket Journal -->
@@ -38,7 +48,7 @@
             <span>Manage Division</span>
         </a>
 
-        <!-- Notification Admin (HANYA UNTUK ADMIN) -->
+        <!-- Notification Admin -->
         @if(Auth::user()->role == 'admin')
         <a href="{{ route('admin.notification.index') }}"
            class="flex items-center gap-2 px-4 py-2 rounded-[10px] transition duration-200 
@@ -54,6 +64,19 @@
         </a>
         @endif
 
+    </div>
+
+    
+
+    <div>
+        <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" 
+                    class="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-[10px] hover:bg-red-600 transition duration-200">
+                <span class="material-symbols-outlined text-base">logout</span>
+                <span>Logout</span>
+            </button>
+        </form>
     </div>
 </div>
 

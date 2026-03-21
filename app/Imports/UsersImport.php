@@ -1,51 +1,83 @@
 <?php
 
+
+
+
 namespace App\Imports;
 
 use App\Models\User;
 use App\Models\Division;
-use App\Models\Divisions;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
 
-class UsersImport implements ToModel, WithHeadingRow, WithValidation
+class UsersImport implements ToCollection, WithHeadingRow, WithValidation, WithChunkReading
 {
     use Importable;
 
     private $errors = [];
+    private $successCount = 0;
+    private $rowNumber = 1;
 
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
-    public function model(array $row)
+     * @param Collection $rows
+     */
+    public function collection(Collection $rows)
     {
-        // Cari division_id berdasarkan nama divisi
-        $division = Divisions::where('division_name', $row['divisi'])->first();
-        
-        if (!$division) {
-            $this->errors[] = "Divisi '{$row['divisi']}' tidak ditemukan untuk user {$row['nama']}";
-            return null;
-        }
+        foreach ($rows as $row) {
+            $this->rowNumber++;
+            
+            
+            
 
-        // Cek apakah email sudah ada
-        if (User::where('email', $row['email'])->exists()) {
-            $this->errors[] = "Email '{$row['email']}' sudah terdaftar untuk user {$row['nama']}";
-            return null;
-        }
+            if (empty($row['nama'])) {
+                $this->errors[] = "Baris {$this->rowNumber}: Nama wajib diisi";
+                continue;
+            }
+            
+            if (empty($row['email'])) {
+                $this->errors[] = "Baris {$this->rowNumber}: Email wajib diisi";
+                continue;
+            }
+            
+            
+            
 
-        return new User([
-            'name'     => $row['nama'],
-            'email'    => $row['email'],
-            'division_id' => $division->id,
-            'password' => Hash::make($row['password'] ?? 'password123'),
-        ]);
+            if (User::where('email', $row['email'])->exists()) {
+                $this->errors[] = "Baris {$this->rowNumber}: Email '{$row['email']}' sudah terdaftar";
+                continue;
+            }
+
+            
+            
+
+            $division = Division::where('division_name', $row['divisi'])->first();
+            
+            if (!$division) {
+                $this->errors[] = "Baris {$this->rowNumber}: Divisi '{$row['divisi']}' tidak ditemukan. Divisi yang tersedia: Macro, Management Account, IT Support, HRD";
+                continue;
+            }
+
+            
+            User::create([
+                'name' => $row['nama'],
+                'email' => $row['email'],
+                'division_id' => $division->id,
+                'password' => Hash::make($row['password'] ?? 'password123'),
+                'role' => 'user',
+            ]);
+            
+            $this->successCount++;
+        }
     }
 
+    /**
+     * Validation rules
+     */
     public function rules(): array
     {
         return [
@@ -56,8 +88,32 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
         ];
     }
 
+    /**
+     * Custom validation messages
+     */
+    public function customValidationMessages()
+    {
+        return [
+            'nama.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'divisi.required' => 'Divisi wajib diisi',
+            'password.min' => 'Password minimal 6 karakter',
+        ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 100;
+    }
+
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    public function getSuccessCount()
+    {
+        return $this->successCount;
     }
 }

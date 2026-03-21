@@ -1,11 +1,13 @@
-{{-- resources/views/admin/notification/show.blade.php --}}
+
+
 @extends('layouts.app')
 
 @section('title', 'Detail Notifikasi')
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
-    {{-- Header --}}
+    
+    
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#004643]">Detail Notifikasi</h1>
         <a href="{{ route('admin.notification.index') }}" 
@@ -18,7 +20,8 @@
         $data = json_decode($notification->data, true);
     @endphp
 
-    {{-- Info Umum --}}
+    
+
     <div class="grid grid-cols-2 gap-6 mb-6">
         <div class="bg-gray-50 p-4 rounded-lg">
             <h3 class="font-semibold text-gray-700 mb-3">Informasi Notifikasi</h3>
@@ -67,7 +70,8 @@
         </div>
     </div>
 
-    {{-- Data Notifikasi --}}
+    
+    
     <div class="bg-gray-50 p-4 rounded-lg mb-6">
         <h3 class="font-semibold text-gray-700 mb-3">Data Notifikasi</h3>
         <pre class="bg-gray-800 text-white p-4 rounded-lg overflow-x-auto text-sm">
@@ -75,7 +79,8 @@
         </pre>
     </div>
 
-    {{-- Actions --}}
+    
+    
     <div class="flex justify-end gap-2 border-t pt-4">
         <form action="{{ route('admin.notification.destroy', $notification->id) }}" method="POST"
               onsubmit="return confirm('Hapus notifikasi ini?')">

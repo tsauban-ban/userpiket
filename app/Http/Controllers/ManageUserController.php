@@ -1,10 +1,13 @@
 <?php
 
+
+
+
 namespace App\Http\Controllers;
- 
+
+use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\UsersImport;
-use App\Exports\UsersTemplateExport;
 use App\Http\Controllers\Controller;
 use App\Models\Division;
 use App\Models\User;
@@ -16,12 +19,10 @@ class ManageUserController extends Controller
 {
     public function index(Request $request)
     {
-         
         $divisions = Division::all();
         
         $query = User::with('division');
         
-        // Filter berdasarkan pencarian (search)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -30,21 +31,28 @@ class ManageUserController extends Controller
             });
         }
         
-        // Filter berdasarkan divisi (division)
         if ($request->filled('division')) {
             $query->where('division_id', $request->division);
         }
         
-         
         $users = $query->orderBy('id', 'asc')->get();
         
-        // Kirim data ke view
         return view('admin.manageusers.index', compact('users', 'divisions'));
+    }
+
+    
+    
+    
+    public function show($id)
+    {
+        
+    
+    
+        return redirect()->route('manageusers.index');
     }
 
     public function store(Request $request)
     {
-        // Validasi data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -59,12 +67,12 @@ class ManageUserController extends Controller
                 ->with('error', 'Validasi gagal. Periksa kembali form Anda.');
         }
 
-        // Buat user baru
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'division_id' => $request->division_id,
             'password' => Hash::make($request->password),
+            'role' => 'user',
         ]);
 
         return redirect()->route('manageusers.index')
@@ -75,7 +83,6 @@ class ManageUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // Validasi data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
@@ -125,16 +132,18 @@ class ManageUserController extends Controller
             $import = new UsersImport();
             Excel::import($import, $request->file('file'));
             
-            $errors = method_exists($import, 'getErrors') ? $import->getErrors() : [];
+            $errors = $import->getErrors();
+            $successCount = $import->getSuccessCount();
             
             if (!empty($errors)) {
+                $message = "Import selesai! Berhasil: {$successCount} user, Gagal: " . count($errors);
                 return redirect()->back()
-                    ->with('warning', 'Import selesai dengan beberapa kesalahan')
+                    ->with('warning', $message)
                     ->with('import_errors', $errors);
             }
             
             return redirect()->back()
-                ->with('success', 'Data users berhasil diimport!');
+                ->with('success', "Import berhasil! {$successCount} user ditambahkan.");
                 
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
@@ -153,38 +162,26 @@ class ManageUserController extends Controller
         }
     }
 
-    public function downloadTemplate()
+    public function export(Request $request)
     {
-        // Data contoh untuk template
-        $data = [
-            ['nama' => 'John Doe', 'email' => 'john@example.com', 'divisi' => 'IT', 'password' => 'password123'],
-            ['nama' => 'Jane Smith', 'email' => 'jane@example.com', 'divisi' => 'HR', 'password' => 'password123'],
-            ['nama' => 'Bob Johnson', 'email' => 'bob@example.com', 'divisi' => 'Finance', 'password' => 'password123'],
-        ];
-
-        // Export ke Excel
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
-            private $data;
-
-            public function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            public function array(): array
-            {
-                return $this->data;
-            }
-
-            public function headings(): array
-            {
-                return [
-                    'nama',
-                    'email',
-                    'divisi',
-                    'password'
-                ];
-            }
-        }, 'template_import_users.xlsx');
+        $query = User::with('division');
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($request->filled('division')) {
+            $query->where('division_id', $request->division);
+        }
+        
+        $users = $query->orderBy('id', 'asc')->get();
+        
+        $fileName = 'data_users_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        return Excel::download(new UsersExport($users), $fileName);
     }
 }

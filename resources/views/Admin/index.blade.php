@@ -1,11 +1,11 @@
-{{-- resources/views/admin/picketjournal/index.blade.php --}}
+
 @extends('layouts.app')
 
 @section('title', 'Picket Journal')
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6">
-    {{-- Header --}}
+    
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">Picket Journal Management</h2>
         <div class="flex gap-2">
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    {{-- Filter Section --}}
+    
     <div class="mb-6">
         <p class="text-gray-600 mb-2">Filter details... (cari nama, kelas, atau absen)</p>
         <div class="flex gap-4">
@@ -45,10 +45,10 @@
         </div>
     </div>
 
-    {{-- Title --}}
+    
     <h3 class="text-xl font-semibold mb-4">Management Picket Journal</h3>
 
-    {{-- Table --}}
+    
     <div class="overflow-x-auto">
         <table class="w-full border">
             <thead>
@@ -126,7 +126,7 @@
         </table>
     </div>
 
-    {{-- Pagination --}}
+    
     <div class="mt-4">
         {{ $journals->links() }}
     </div>

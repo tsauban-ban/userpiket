@@ -4,7 +4,8 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6">
-    {{-- Header --}}
+    
+    
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">Manage Divisions</h2>
         <button onclick="openAddModal()" 
@@ -13,11 +14,13 @@
         </button>
     </div>
 
-    {{-- Grid Divisions --}}
+    
+    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @forelse($divisions as $division)
         <div class="border rounded-lg shadow-sm overflow-hidden">
-            {{-- Card Header --}}
+            
+            
             <div class="p-5 bg-gray-50 border-b">
                 <h3 class="text-lg font-semibold">{{ $division->division_name }}</h3>
                 <p class="text-sm text-gray-600 mt-1">
@@ -25,9 +28,11 @@
                 </p>
             </div>
 
-            {{-- Card Body --}}
+            
+            
             <div class="p-5">
-                {{-- Preview Users (max 3) --}}
+                
+                
                 @php
                     $users = $division->users->take(3);
                 @endphp
@@ -53,7 +58,8 @@
                     <p class="text-gray-400 text-sm mb-4">Belum ada user di divisi ini</p>
                 @endif
 
-                {{-- Action Buttons --}}
+                
+                
                 <div class="flex gap-2 mt-4">
                     <a href="{{ route('divisions.show', $division->id) }}" 
                        class="bg-pink-500 text-white px-4 py-1.5 rounded text-sm hover:bg-pink-600">
@@ -80,7 +86,8 @@
     </div>
 </div>
 
-{{-- MODAL ADD DIVISION --}}
+
+
 <div id="addModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg max-w-md w-full">
         <div class="p-6 border-b">
@@ -108,7 +115,8 @@
     </div>
 </div>
 
-{{-- MODAL EDIT DIVISION --}}
+
+
 <div id="editModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg max-w-md w-full">
         <div class="p-6 border-b">
@@ -135,7 +143,8 @@
     </div>
 </div>
 
-{{-- MODAL DELETE DIVISION --}}
+
+
 <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg max-w-md w-full">
         <div class="p-6">
@@ -164,7 +173,8 @@
 </div>
 
 <script>
-// Add Modal
+
+
 function openAddModal() {
     document.getElementById('addModal').classList.remove('hidden');
     document.getElementById('addModal').classList.add('flex');
@@ -175,7 +185,8 @@ function closeAddModal() {
     document.getElementById('addModal').classList.remove('flex');
 }
 
-// Edit Modal
+
+
 function openEditModal(id, name) {
     document.getElementById('edit_division_name').value = name;
     document.getElementById('editForm').action = '/divisions/' + id;
@@ -188,7 +199,8 @@ function closeEditModal() {
     document.getElementById('editModal').classList.remove('flex');
 }
 
-// Delete Modal
+
+
 function openDeleteModal(id, name) {
     document.getElementById('deleteDivisionName').textContent = name;
     document.getElementById('deleteForm').action = '/divisions/' + id;
@@ -201,7 +213,8 @@ function closeDeleteModal() {
     document.getElementById('deleteModal').classList.remove('flex');
 }
 
-// Close modal when clicking outside
+
+
 window.onclick = function(event) {
     if (event.target == document.getElementById('addModal')) closeAddModal();
     if (event.target == document.getElementById('editModal')) closeEditModal();

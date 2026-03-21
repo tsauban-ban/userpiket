@@ -15,28 +15,25 @@ class PicketJournalNotification extends Notification implements ShouldQueue
     use Queueable;
 
     protected $journal;
-    protected $action; // 'created', 'updated', 'status_changed'
+    protected $action; 
 
-    /**
-     * Create a new notification instance.
-     */
+    
+    
     public function __construct(PicketJournal $journal, $action = 'created')
     {
         $this->journal = $journal;
         $this->action = $action;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     */
+    
+    
     public function via($notifiable)
     {
         return ['database', 'mail']; // Bisa ditambah 'broadcast' untuk real-time
     }
 
-    /**
-     * Get the array representation of the notification.
-     */
+    
+    
     public function toDatabase($notifiable)
     {
         $messages = [
@@ -61,9 +58,8 @@ class PicketJournalNotification extends Notification implements ShouldQueue
         ];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
+    
+    
     public function toMail($notifiable)
     {
         $statusLabels = [
@@ -92,9 +88,8 @@ class PicketJournalNotification extends Notification implements ShouldQueue
                     ->line('Terima kasih telah menggunakan aplikasi piket!');
     }
 
-    /**
-     * Get the array representation for broadcasting.
-     */
+    
+    
     public function toBroadcast($notifiable)
     {
         return [
@@ -102,9 +97,8 @@ class PicketJournalNotification extends Notification implements ShouldQueue
         ];
     }
 
-    /**
-     * Get the notification's database type.
-     */
+    
+    
     public function databaseType()
     {
         return 'picket-journal';

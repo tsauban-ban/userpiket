@@ -4,7 +4,8 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
-    {{-- Header --}}
+    
+    
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#004643]">Edit Jurnal</h1>
         <div class="text-sm bg-gray-100 px-3 py-1 rounded-full">
@@ -12,13 +13,15 @@
         </div>
     </div>
 
-    {{-- Form --}}
+    
+    
     <form action="{{ route('admin.picketjournal.update', $journal->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         <div class="grid grid-cols-2 gap-6">
-            {{-- Left Column --}}
+            
+            
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama User</label>
@@ -51,7 +54,8 @@
                 </div>
             </div>
 
-            {{-- Right Column --}}
+            
+            
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -124,7 +128,8 @@
             </div>
         </div>
 
-        {{-- Image Upload Section --}}
+        
+        
         <div class="mt-6 border-t pt-4">
             <h3 class="font-semibold text-gray-700 mb-3">Gambar</h3>
             <div class="grid grid-cols-2 gap-6">
@@ -151,7 +156,8 @@
             </div>
         </div>
 
-        {{-- Actions --}}
+        
+        
         <div class="flex justify-end gap-2 mt-6 border-t pt-4">
             <a href="{{ route('admin.picketjournal.show', $journal->id) }}" 
                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">

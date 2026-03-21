@@ -1,5 +1,6 @@
 <?php
-// app/Listeners/SendPicketJournalNotification.php
+
+
 
 namespace App\Listeners;
 
@@ -18,7 +19,8 @@ class SendPicketJournalNotification implements ShouldQueue
      */
     public function __construct()
     {
-        //
+        
+    
     }
 
     /**
@@ -29,12 +31,14 @@ class SendPicketJournalNotification implements ShouldQueue
         $journal = $event->journal;
         $action = $event->action;
 
-        // 1. Notifikasi ke user yang bersangkutan
+        
+        
         if ($journal->user) {
             $journal->user->notify(new PicketJournalNotification($journal, $action));
         }
 
-        // 2. Notifikasi ke admin (jika perlu)
+        
+        
         if (in_array($action, ['created', 'status_changed'])) {
             $admins = User::where('role', 'admin')->get();
             foreach ($admins as $admin) {
@@ -42,7 +46,8 @@ class SendPicketJournalNotification implements ShouldQueue
             }
         }
 
-        // 3. Notifikasi ke user dalam divisi yang sama (jika perlu)
+        
+        
         if ($action == 'created' && $journal->user->division) {
             $divisionUsers = User::where('division_id', $journal->user->division_id)
                                   ->where('id', '!=', $journal->user_id)

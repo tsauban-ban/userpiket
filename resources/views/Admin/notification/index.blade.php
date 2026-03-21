@@ -1,11 +1,13 @@
-{{-- resources/views/admin/notification/index.blade.php --}}
+
+
 @extends('layouts.app')
 
 @section('title', 'Admin - Manage Notifications')
 
 @section('content')
 <div class="bg-white rounded-lg shadow p-6">
-    {{-- Header --}}
+    
+    
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#004643]">Manage Notifications</h1>
         <button onclick="openBroadcastModal()" 
@@ -14,7 +16,8 @@
         </button>
     </div>
 
-    {{-- Stats Cards --}}
+    
+    
     <div class="grid grid-cols-4 gap-4 mb-6">
         <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
             <div class="text-2xl font-bold text-blue-600">{{ $stats['total_notifications'] ?? 0 }}</div>
@@ -34,7 +37,8 @@
         </div>
     </div>
 
-    {{-- Filter Form --}}
+    
+    
     <form method="GET" class="grid grid-cols-4 gap-4 mb-6">
         <select name="user_id" class="border rounded-lg p-2">
             <option value="">Semua User</option>
@@ -58,7 +62,8 @@
         </button>
     </form>
 
-    {{-- Actions --}}
+    
+    
     <div class="flex justify-end mb-4">
         <form action="{{ route('admin.notification.clearRead') }}" method="POST" 
               onsubmit="return confirm('Hapus semua notifikasi yang sudah dibaca?')">
@@ -70,7 +75,8 @@
         </form>
     </div>
 
-    {{-- Notifications Table --}}
+    
+    
     <div class="overflow-x-auto">
         <table class="w-full border-collapse">
             <thead>
@@ -138,13 +144,15 @@
         </table>
     </div>
 
-    {{-- Pagination --}}
+    
+    
     <div class="mt-4">
         {{ $notifications->appends(request()->query())->links() }}
     </div>
 </div>
 
-{{-- Modal Broadcast --}}
+
+
 <div id="broadcastModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-lg max-w-lg w-full">
         <div class="p-6 border-b">
