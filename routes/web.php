@@ -31,6 +31,21 @@ Route::middleware('auth')->group(function () {
         Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
         Route::delete('/notifications/delete-read', [NotificationController::class, 'deleteRead'])->name('notifications.delete-read');
     });
+
+    Route::prefix('user')->name('user.')->group(function () {
+
+    // Picket Journal USER
+    Route::get('/picket', [UserController::class, 'picketIndex'])->name('picket.index');
+    Route::get('/picket/create', [UserController::class, 'picketCreate'])->name('picket.create');
+    Route::post('/picket/store', [UserController::class, 'picketStore'])->name('picket.store');
+
+    Route::get('/picket/{id}', [UserController::class, 'picketShow'])->name('picket.show');
+
+    // START & END PICKET
+    Route::post('/picket/{id}/start', [UserController::class, 'startPicket'])->name('picket.start');
+    Route::post('/picket/{id}/end', [UserController::class, 'endPicket'])->name('picket.end');
+
+    });
 });
 
 // ========== ROUTES UNTUK ADMIN SAJA ==========

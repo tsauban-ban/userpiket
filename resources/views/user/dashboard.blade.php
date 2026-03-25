@@ -170,35 +170,41 @@
         </div>
 
         <!-- Filter Section -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis</label>
-                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-                    <option>Pilih Jenis</option>
-                    <option>Keamanan</option>
-                    <option>Kebersihan</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-                    <option>Pilih Status</option>
-                    <option>Pending</option>
-                    <option>Done</option>
-                    <option>Alpha</option>
-                </select>
-            </div>
+        <form method="GET" action="{{ route('dashboard') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <!-- JENIS -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis</label>
+                    <select name="activity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">Semua</option>
+                        <option value="Keamanan">Keamanan</option>
+                        <option value="Kebersihan">Kebersihan</option>
+                    </select>
+                </div>
+
+                <!-- STATUS -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">Semua</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Done">Done</option>
+                        <option value="Alpha">Alpha</option>
+                    </select>
+                </div>
+
+            
+            
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
-                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <input type="date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Aksi</label>
-                <button type="button" class="w-full bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
+                <button type="submit" class="w-full bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
                     Cari
                 </button>
             </div>
-        </div>
+        </form>
         
         <!-- Tabel Jadwal Piket -->
         <div class="overflow-x-auto">
@@ -216,19 +222,25 @@
                     @if(isset($schedules) && $schedules->count() > 0)
                         @foreach($schedules as $schedule)
                         <tr class="hover:bg-orange-50 transition">
-                            <td class="px-4 py-3">{{ $schedule->user_name }}</td>
-                            <td class="px-4 py-3">{{ $schedule->day }}</td>
+                            <!-- NAMA -->
+                            <td class="px-4 py-3">{{ $schedule->user->name }}</td>
+                            <td class="px-4 py-3">{{ $schedule->day_name }}</td>
                             <td class="px-4 py-3">{{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }}</td>
-                            <td class="px-4 py-3">{{ $schedule->division_name }}</td>
-                            <td class="px-4 py-3">{{ $schedule->type }}</td>
-                            <td class="px-4 py-3 text-gray-500">{{ $schedule->description }}</td>
+                            <td class="px-4 py-3">{{ $schedule->user->division->division_name ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $schedule->activity }}</td>
+                            <td class="px-4 py-3 text-gray-500">{{ $schedule->description ?? '-' }}</td>
+                            <!-- STATUS -->
                             <td class="px-4 py-3">
                                 @if($schedule->status == 'Pending')
                                     <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Pending</span>
                                 @elseif($schedule->status == 'Done')
                                     <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Done</span>
-                                @else
+                                @elseif($schedule->status == 'Alpha')
                                     <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">Alpha</span>
+                                @else
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
+                                        {{ $schedule->status }}
+                                    </span>
                                 @endif
                             </td>
                         </tr>
