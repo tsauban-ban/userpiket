@@ -44,11 +44,10 @@
         </div>
     </div>
 
-    <!-- HEADER DIVISI (BERUBAH SESUAI DIVISI USER) -->
+    <!-- HEADER DIVISI -->
     <div class="bg-white rounded-lg shadow p-6 mb-6">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <!-- JUDUL DIVISI BERUBAH SESUAI DIVISI USER -->
                 <h1 class="text-3xl font-bold text-gray-800">
                     DIVISI {{ strtoupper($user->division->division_name ?? 'MA') }}
                 </h1>
@@ -127,15 +126,8 @@
                 </div>
             </div>
             
-            <!-- Ganti User dan Logout -->
+            <!-- Logout -->
             <div class="flex items-center gap-3">
-                <button type="button" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                    <span class="text-gray-700">Ganti User</span>
-                </button>
-                
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
@@ -151,116 +143,12 @@
             <p class="text-gray-500 text-sm">Divisi {{ $user->division->division_name ?? 'Management Account' }}</p>
         </div>
     </div>
-
-    <!-- Navigation Hari dan Filter -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">Jadwal Piket Anda</h2>
-            <span class="text-sm text-gray-500">Total: {{ isset($schedules) ? $schedules->count() : 0 }} jadwal</span>
-        </div>
-        
-        <!-- Navigation Hari -->
-        <div class="flex gap-3 mb-6">
-            @php $days = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT']; @endphp
-            @foreach($days as $day)
-                <button type="button" class="day-filter px-6 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white" data-day="{{ $day }}">
-                    {{ $day }}
-                </button>
-            @endforeach
-        </div>
-
-        <!-- Filter Section -->
-        <form method="GET" action="{{ route('dashboard') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <!-- JENIS -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Jenis</label>
-                    <select name="activity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-                        <option value="">Semua</option>
-                        <option value="Keamanan">Keamanan</option>
-                        <option value="Kebersihan">Kebersihan</option>
-                    </select>
-                </div>
-
-                <!-- STATUS -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-                        <option value="">Semua</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Done">Done</option>
-                        <option value="Alpha">Alpha</option>
-                    </select>
-                </div>
-
-            
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
-                <input type="date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Aksi</label>
-                <button type="submit" class="w-full bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
-                    Cari
-                </button>
-            </div>
-        </form>
-        
-        <!-- Tabel Jadwal Piket -->
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50">
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Nama</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Hari</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Tanggal</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Divisi</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Jenis Piket</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Keterangan</th>
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-600">Status</th>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @if(isset($schedules) && $schedules->count() > 0)
-                        @foreach($schedules as $schedule)
-                        <tr class="hover:bg-orange-50 transition">
-                            <!-- NAMA -->
-                            <td class="px-4 py-3">{{ $schedule->user->name }}</td>
-                            <td class="px-4 py-3">{{ $schedule->day_name }}</td>
-                            <td class="px-4 py-3">{{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }}</td>
-                            <td class="px-4 py-3">{{ $schedule->user->division->division_name ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $schedule->activity }}</td>
-                            <td class="px-4 py-3 text-gray-500">{{ $schedule->description ?? '-' }}</td>
-                            <!-- STATUS -->
-                            <td class="px-4 py-3">
-                                @if($schedule->status == 'Pending')
-                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Pending</span>
-                                @elseif($schedule->status == 'Done')
-                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Done</span>
-                                @elseif($schedule->status == 'Alpha')
-                                    <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">Alpha</span>
-                                @else
-                                    <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
-                                        {{ $schedule->status }}
-                                    </span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-                                Belum ada jadwal piket
-                            </td>
-                        </tr>
-                    @endif
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Notifikasi dropdown
     const bellButton = document.getElementById('bellButton');
     const notificationDropdown = document.getElementById('notificationDropdown');
     
