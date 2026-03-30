@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/picket/{id}', [UserController::class, 'picketShow'])->name('picket.show');
         Route::post('/picket/{id}/start', [UserController::class, 'startPicket'])->name('picket.start');
         Route::post('/picket/{id}/end', [UserController::class, 'endPicket'])->name('picket.end');
+        // Route::post('/picket/{id}/upload-photo', [UserController::class, 'uploadPhoto'])->name('picket.upload');
+        Route::post('/picket/{id}/upload', [UserController::class, 'uploadPhoto'])->name('picket.upload');
         
         // ========== PICKET SCHEDULE UNTUK USER (HANYA LIHAT) ==========
         Route::get('/picket-schedule', [UserPicketScheduleController::class, 'index'])->name('picket-schedule.index');

@@ -8,10 +8,6 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-gray-800">Piket Saya</h2>
 
-        <a href="{{ route('user.picket.create') }}"
-           class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
-            + Tambah Piket
-        </a>
     </div>
 
     <!-- CARD TABLE -->
@@ -73,15 +69,6 @@
                                 @csrf
                                 <button class="bg-green-500 text-white px-3 py-1 rounded text-sm">
                                     Mulai
-                                </button>
-                            </form>
-                        @endif
-
-                        @if($item->status == 'On Progress')
-                            <form action="{{ route('user.picket.end', $item->id) }}" method="POST">
-                                @csrf
-                                <button class="bg-red-500 text-white px-3 py-1 rounded text-sm">
-                                    Selesai
                                 </button>
                             </form>
                         @endif

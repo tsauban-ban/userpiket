@@ -42,8 +42,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
                 <p class="text-gray-500 text-sm">Mulai</p>
-                <p class="font-semibold">
-                    {{ $picket->start_time ?? '-' }}
+                <p id="stopwatch" class="font-semibold text-lg text-blue-600">
+                    00:00:00
                 </p>
             </div>
 
@@ -67,54 +67,104 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
             <!-- BEFORE -->
-            <div>
+            <!-- <div>
                 <p class="text-gray-500 text-sm mb-2">Before</p>
-                @if($picket->hasBeforePhoto())
-                    <img src="{{ $picket->before_photo_url }}" class="rounded-lg shadow w-full">
-                @else
-                    <div class="bg-gray-100 p-6 text-center rounded">Tidak ada foto</div>
-                @endif
-            </div>
+                <form action="{{ route('user.picket.upload', $picket->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="before_photo">
+                    <button type="submit">Upload</button>
+                </form>
+            </div> -->
 
             <!-- AFTER -->
-            <div>
-                <p class="text-gray-500 text-sm mb-2">After</p>
-                @if($picket->hasAfterPhoto())
-                    <img src="{{ $picket->after_photo_url }}" class="rounded-lg shadow w-full">
-                @else
-                    <div class="bg-gray-100 p-6 text-center rounded">Tidak ada foto</div>
-                @endif
-            </div>
+            <!-- <div>
+                <form action="{{ route('user.picket.upload', $picket->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="after_photo">
+                    <button type="submit">Upload</button>
+                </form>
+            </div> -->
 
         </div>
 
         <!-- ACTION BUTTON -->
-        <div class="flex gap-3">
+        <div class="border-t pt-6">
+    <div class="flex flex-col md:flex-row gap-4">
+        
+        <form action="{{ route('user.picket.end', $picket->id) }}" method="POST" enctype="multipart/form-data" class="w-full">
+            @csrf
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="flex flex-col">
+                    <label class="text-xs text-gray-500 mb-1">Foto Before</label>
+                    <input type="file" name="before_photo" required class="text-sm border p-1 rounded bg-white w-full">
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-xs text-gray-500 mb-1">Foto After</label>
+                    <input type="file" name="after_photo" required class="text-sm border p-1 rounded bg-white w-full">
+                </div>
+            </div>
 
-            <a href="{{ route('user.picket.index') }}" 
-               class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                Kembali
-            </a>
-
-            @if(!$picket->start_time)
-                <form action="{{ route('user.picket.start', $picket->id) }}" method="POST">
-                    @csrf
-                    <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                        Mulai Piket
-                    </button>
-                </form>
-            @elseif(!$picket->end_time)
-                <form action="{{ route('user.picket.end', $picket->id) }}" method="POST">
-                    @csrf
-                    <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('user.picket.index') }}" 
+                   class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors inline-block">
+                   Kembali
+                </a>
+                
+                @if($picket->status == 'Pending')
+                    @elseif($picket->status == 'OnGoing')
+                    <button type="submit" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 shadow-sm">
                         Selesai Piket
                     </button>
-                </form>
-            @endif
-
-        </div>
+                @endif
+            </div>
+        </form>
 
     </div>
-
 </div>
+
+<script>
+    // Pastikan format date adalah YYYY-MM-DD dari database, bukan format 'Senin, 30 Maret'
+    // Jika $picket->date sudah terformat di Model, gunakan kolom asli (misal: getAttributes()['date'])
+    let dateStr = "{{ $picket->getAttributes()['date'] ?? $picket->date }}"; 
+    let startTime = "{{ $picket->start_time }}";
+    let endTime = "{{ $picket->end_time }}";
+
+    function parseDateTime(d, t) {
+        if (!d || !t) return null;
+        // Menggabungkan YYYY-MM-DD dan HH:mm:ss menjadi format ISO
+        return new Date(d + "T" + t);
+    }
+
+    let start = parseDateTime(dateStr, startTime);
+    let end = parseDateTime(dateStr, endTime);
+
+    function updateStopwatch() {
+        if (!start || isNaN(start.getTime())) {
+            document.getElementById("stopwatch").innerHTML = "00:00:00";
+            return;
+        }
+
+        let now = (end && !isNaN(end.getTime())) ? end : new Date();
+        let diff = now - start;
+
+        if (diff < 0) diff = 0;
+
+        let hours = Math.floor(diff / 3600000);
+        let minutes = Math.floor((diff % 3600000) / 60000);
+        let seconds = Math.floor((diff % 60000) / 1000);
+
+        document.getElementById("stopwatch").innerHTML =
+            String(hours).padStart(2, '0') + ":" +
+            String(minutes).padStart(2, '0') + ":" +
+            String(seconds).padStart(2, '0');
+    }
+
+    updateStopwatch();
+
+    // Jalankan interval hanya jika status masih OnGoing (belum ada end time)
+    if (!end || isNaN(end.getTime())) {
+        setInterval(updateStopwatch, 1000);
+    }
+</script>
 @endsection

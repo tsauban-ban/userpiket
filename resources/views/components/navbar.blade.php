@@ -86,7 +86,7 @@
                   {{ request()->routeIs('user.picket.index') || request()->routeIs('user.picket.show') || request()->routeIs('user.picket.create') ? 'bg-[#F9BC60] text-[#004643]' : 'hover:bg-[#F9BC60] text-[#004643]' }} 
                   text-sm font-medium">
             <span class="material-symbols-outlined text-base">assignment</span>
-            <span>Piket Saya</span>
+            <span>Picket Journal</span>
         </a>
 
         <!-- Picket Schedule User -->
