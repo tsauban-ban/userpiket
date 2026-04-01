@@ -89,107 +89,71 @@ class UserController extends Controller
         return redirect()->route('user.picket.show', $id);
     }
 
+    // Contoh di UserController atau PicketController
+    // ... (method lainnya)
+
     public function endPicket(Request $request, $id)
     {
-        $picket = PicketJournal::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
-    
-        // upload before
+        $picket = PicketJournal::findOrFail($id);
+
         if ($request->hasFile('before_photo')) {
-            $file = $request->file('before_photo');
-            $nama = time().'_before.'.$file->getClientOriginalExtension();
-            $file->move(public_path('images'), $nama);
-            $picket->before_photo = $nama;
+            // Simpan ke storage/app/public/picket_photos
+            $picket->before_photo = $request->file('before_photo')->store('picket_photos', 'public');
         }
-    
-        // upload after
+
         if ($request->hasFile('after_photo')) {
-            $file = $request->file('after_photo');
-            $nama = time().'_after.'.$file->getClientOriginalExtension();
-            $file->move(public_path('images'), $nama);
-            $picket->after_photo = $nama;
+            $picket->after_photo = $request->file('after_photo')->store('picket_photos', 'public');
         }
-    
-        $picket->update([
-            'end_time' => now()->format('H:i:s'),
-            'status' => 'Done'
-        ]);
-    
-        return redirect()->route('user.picket.show', $id);
-    }
 
+        $picket->status = 'Done';
+        $picket->end_time = now()->format('H:i:s');
+        $picket->save();
 
-    public function picketCreate()
-    {
-        return view('user.picket.create');
+        return redirect()->back();
     }
 
     public function picketStore(Request $request)
     {
-        // VALIDASI
         $request->validate([
             'activity' => 'required|string|max:255',
             'date' => 'required|date',
-            'description' => 'nullable|string',
-            'location' => 'nullable|string|max:255',
-            'before_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'after_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'before_photo' => 'nullable|image|max:2048',
+            'after_photo' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->all();
 
-        // BEFORE
+        // Samakan menggunakan store() agar masuk ke folder storage
         if ($request->hasFile('before_photo')) {
-            $file = $request->file('before_photo'); // ✅ FIX
-            $nama = time().'_before.'.$file->getClientOriginalExtension();
-            $file->move(public_path('images'), $nama);
-
-            $data['before_photo'] = $nama; // ✅ WAJIB
+            $data['before_photo'] = $request->file('before_photo')->store('picket_photos', 'public');
         }
 
-        // AFTER
         if ($request->hasFile('after_photo')) {
-            $file = $request->file('after_photo'); // ✅ FIX
-            $nama = time().'_after.'.$file->getClientOriginalExtension();
-            $file->move(public_path('images'), $nama);
-
-            $data['after_photo'] = $nama; // ✅ WAJIB
+            $data['after_photo'] = $request->file('after_photo')->store('picket_photos', 'public');
         }
 
-        // TAMBAH USER ID
         $data['user_id'] = auth()->id();
         $data['status'] = 'Pending';
 
-        // SIMPAN
         PicketJournal::create($data);
 
-        return redirect()->route('user.picket.index')
-            ->with('success', 'Piket berhasil ditambahkan');
+        return redirect()->route('user.picket.index')->with('success', 'Piket berhasil ditambahkan');
     }
 
     public function uploadPhoto(Request $request, $id)
     {
-        // $picket = PicketJournal::findOrFail($id);
-        $picket = PicketJournal::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        $picket = PicketJournal::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        
         if ($request->hasFile('before_photo')) {
-            $file = $request->file('before_photo');
-            $nama = time().'_before.'.$file->getClientOriginalExtension();
-            $file->move(public_path('images'), $nama);
-            $picket->before_photo = $nama;
+            $picket->before_photo = $request->file('before_photo')->store('picket_photos', 'public');
         }
 
         if ($request->hasFile('after_photo')) {
-            $file = $request->file('after_photo');
-            $nama = time().'_after.'.$file->getClientOriginalExtension();
-            $file->move(public_path('images'), $nama);
-            $picket->after_photo = $nama;
+            $picket->after_photo = $request->file('after_photo')->store('picket_photos', 'public');
         }
 
         $picket->save();
-
         return back();
-    }
+    }    
+
 }   
